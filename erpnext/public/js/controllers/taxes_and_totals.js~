@@ -258,6 +258,8 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 			me.frm.doc.base_net_total += item.base_net_amount;
 		});
 
+		
+
 		frappe.model.round_floats_in(this.frm.doc, ["total", "base_total", "net_total", "base_net_total"]);
 	},
 

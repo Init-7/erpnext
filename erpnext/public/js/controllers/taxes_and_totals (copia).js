@@ -220,7 +220,7 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 
 	calculate_net_total: function() {
 		var me = this;
-		this.frm.doc.total = this.frm.doc.base_total =this.frm.doc.base_total_materiales=this.frm.doc.base_total_servicios=this.frm.doc.base_total_rrhh=this.frm.doc.base_total_epp= this.frm.doc.net_total = this.frm.doc.base_net_total = 0.0;
+		this.frm.doc.total = this.frm.doc.base_total =this.frm.doc.base_total_materiales=this.frm.doc.base_total_servicio=this.frm.doc.base_total_rrhh=this.frm.doc.base_total_epp= this.frm.doc.net_total = this.frm.doc.base_net_total = 0.0;
 		
 		
 		$.each(this.frm.doc["items"] || [], function(i, item) {
@@ -257,6 +257,8 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 			me.frm.doc.net_total += item.net_amount;
 			me.frm.doc.base_net_total += item.base_net_amount;
 		});
+
+		
 
 		frappe.model.round_floats_in(this.frm.doc, ["total", "base_total", "net_total", "base_net_total"]);
 	},
