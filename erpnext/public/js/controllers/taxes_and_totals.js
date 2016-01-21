@@ -531,10 +531,19 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 
 		// rounded totals
 		if(frappe.meta.get_docfield(this.frm.doc.doctype, "rounded_total", this.frm.doc.name)) {
-			this.frm.doc.rounded_total = Math.round(this.frm.doc.grand_total);
+			this.frm.doc.rounded_total = round_based_on_smallest_currency_fraction(this.frm.doc.grand_total, 
+				this.frm.doc.currency, precision("rounded_total"));
 		}
 		if(frappe.meta.get_docfield(this.frm.doc.doctype, "base_rounded_total", this.frm.doc.name)) {
+<<<<<<< HEAD
 			this.frm.doc.base_rounded_total = Math.round(this.frm.doc.base_grand_total);	
+=======
+			var company_currency = this.get_company_currency();
+			
+			this.frm.doc.base_rounded_total = 
+				round_based_on_smallest_currency_fraction(this.frm.doc.base_grand_total, 
+					company_currency, precision("base_rounded_total"));
+>>>>>>> 3d5a6af1aebeda37c869353bc4b5de9971355989
 		}
 	},
 
@@ -652,8 +661,11 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 			var total_amount_to_pay = flt((this.frm.doc.grand_total - this.frm.doc.total_advance 
 				- this.frm.doc.write_off_amount), precision("grand_total"));			
 		} else {
-			var total_amount_to_pay = flt((this.frm.doc.base_grand_total - this.frm.doc.total_advance 
-				- this.frm.doc.base_write_off_amount), precision("base_grand_total"));
+			var total_amount_to_pay = flt(
+				(flt(this.frm.doc.grand_total*this.frm.doc.conversion_rate, precision("grand_total")) 
+					- this.frm.doc.total_advance - this.frm.doc.base_write_off_amount), 
+				precision("base_grand_total")
+			);
 		}
 		
 		if(this.frm.doc.doctype == "Sales Invoice") {
