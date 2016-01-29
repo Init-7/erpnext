@@ -220,10 +220,10 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 
 	calculate_net_total: function() {
 		var me = this;
-		this.frm.doc.total = this.frm.doc.base_total =this.frm.doc.base_total_materiales=this.frm.doc.base_total_servicio=this.frm.doc.base_total_rrhh=this.frm.doc.base_total_epp= this.frm.doc.net_total = this.frm.doc.base_net_total = 0.0;
+		this.frm.doc.total = this.frm.doc.base_total =this.frm.doc.base_total_materiales=this.frm.doc.base_total_servicios=this.frm.doc.base_total_rrhh=this.frm.doc.base_total_epp= this.frm.doc.net_total = this.frm.doc.base_net_total =this.frm.doc.total_alimentacion=this.frm.doc.total_traslado=this.frm.doc.total1=this.frm.doc.total2=this.frm.doc.total3= 0.0;
 		
 		
-		$.each(this.frm.doc["items"] || [], function(i, item) {
+		$.each(this.frm.doc["items"] || [], function(i, item) {	
 			me.frm.doc.total += item.amount;
 			me.frm.doc.base_total += item.base_amount;
 			me.frm.doc.net_total += item.net_amount;
@@ -233,32 +233,45 @@ erpnext.taxes_and_totals = erpnext.stock.StockController.extend({
 		$.each(this.frm.doc["tablamateriales"] || [], function(i, item) {
 			me.frm.doc.total += item.amount;
 			me.frm.doc.base_total_materiales += item.base_amount;
+			
 			me.frm.doc.net_total += item.net_amount;
 			me.frm.doc.base_net_total += item.base_net_amount;
 		});
-
+		
+		
 		$.each(this.frm.doc["tablaservicio"] || [], function(i, item) {
-			me.frm.doc.total += item.amount;
-			me.frm.doc.base_total_servicios += item.base_amount;
+			me.frm.doc.total += item.amount;			
+			if(item.item_name == 'Traslado')
+			{
+				me.frm.doc.total3 += item.base_amount;
+			}
+			if(item.item_name == 'Alimentación')
+			{
+				me.frm.doc.total3 += item.base_amount;
+				me.frm.doc.total2 += item.base_amount;	
+			}
+			me.frm.doc.base_total_servicios += item.base_amount;		
 			me.frm.doc.net_total += item.net_amount;
 			me.frm.doc.base_net_total += item.base_net_amount;
 		});
-
+		
+		
 		$.each(this.frm.doc["tablarrhh"] || [], function(i, item) {
 			me.frm.doc.total += item.amount;
 			me.frm.doc.base_total_rrhh += item.base_amount;
 			me.frm.doc.net_total += item.net_amount;
 			me.frm.doc.base_net_total += item.base_net_amount;
+				
 		});
-
+		
 		$.each(this.frm.doc["tablaepp"] || [], function(i, item) {
 			me.frm.doc.total += item.amount;
 			me.frm.doc.base_total_epp += item.base_amount;
 			me.frm.doc.net_total += item.net_amount;
 			me.frm.doc.base_net_total += item.base_net_amount;
+				
 		});
 
-		
 
 		frappe.model.round_floats_in(this.frm.doc, ["total", "base_total", "net_total", "base_net_total"]);
 	},
